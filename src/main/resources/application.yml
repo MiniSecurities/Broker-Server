@@ -1,0 +1,9 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: broker-server
+
+trade-server:
+  base-url: http://localhost:8080
