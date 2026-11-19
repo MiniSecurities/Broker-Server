@@ -1,5 +1,7 @@
-package com.sangyunpark99.brokerserver.order;
+package com.sangyunpark99.brokerserver.order.service;
 
+import com.sangyunpark99.brokerserver.order.utils.FillQuantitySplitter;
+import com.sangyunpark99.brokerserver.order.controller.dto.BrokerOrderRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
