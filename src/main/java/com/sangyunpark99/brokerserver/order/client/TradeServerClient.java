@@ -1,0 +1,32 @@
+package com.sangyunpark99.brokerserver.order.client;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class TradeServerClient {
+
+    private final RestClient tradeServerRestClient;
+
+    public void sendFill(FillNotification notification) {
+        try {
+            tradeServerRestClient.post()
+                    .uri("/api/fills")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(notification)
+                    .retrieve()
+                    .toBodilessEntity();
+            log.info("fill sent orderId={} quantity={} price={}",
+                    notification.orderId(), notification.fillQuantity(), notification.fillPrice());
+        } catch (RestClientException e) {
+            log.error("fill send failed orderId={} quantity={} price={}",
+                    notification.orderId(), notification.fillQuantity(), notification.fillPrice(), e);
+        }
+    }
+}

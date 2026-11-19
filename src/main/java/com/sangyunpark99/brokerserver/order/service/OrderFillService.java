@@ -1,0 +1,37 @@
+package com.sangyunpark99.brokerserver.order.service;
+
+import com.sangyunpark99.brokerserver.order.client.FillNotification;
+import com.sangyunpark99.brokerserver.order.client.TradeServerClient;
+import com.sangyunpark99.brokerserver.order.utils.FillPricePicker;
+import com.sangyunpark99.brokerserver.order.utils.FillQuantitySplitter;
+import com.sangyunpark99.brokerserver.order.controller.dto.BrokerOrderRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+@Service
+@RequiredArgsConstructor
+public class OrderFillService {
+
+    private final FillQuantitySplitter fillQuantitySplitter;
+    private final FillPricePicker fillPricePicker;
+    private final ScheduledExecutorService scheduler;
+    private final TradeServerClient tradeServerClient;
+
+    public void accept(BrokerOrderRequest request) {
+        List<Long> fillQuantities = fillQuantitySplitter.split(request.quantity());
+
+        long delay = 0;
+
+        for(Long fillQuantity: fillQuantities) {
+            delay += 500;
+            BigDecimal fillPrice = fillPricePicker.pick(request.limitPrice());
+            scheduler.schedule(() -> tradeServerClient.sendFill(new FillNotification(request.orderId(), fillQuantity, fillPrice)),
+                    delay, TimeUnit.MILLISECONDS);
+        }
+    }
+}

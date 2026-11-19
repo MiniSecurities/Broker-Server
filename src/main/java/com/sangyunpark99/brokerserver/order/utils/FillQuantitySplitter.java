@@ -1,4 +1,4 @@
-package com.sangyunpark99.brokerserver.order;
+package com.sangyunpark99.brokerserver.order.utils;
 
 import org.springframework.stereotype.Component;
 

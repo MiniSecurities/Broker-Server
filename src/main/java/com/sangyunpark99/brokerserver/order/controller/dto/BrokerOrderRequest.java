@@ -1,4 +1,4 @@
-package com.sangyunpark99.brokerserver.order;
+package com.sangyunpark99.brokerserver.order.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
