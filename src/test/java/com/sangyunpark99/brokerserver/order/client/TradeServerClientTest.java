@@ -30,17 +30,17 @@ class TradeServerClientTest {
     }
 
     @Test
-    @DisplayName("체결을 POST /api/fills로 보낸다")
+    @DisplayName("체결 ID를 포함한 체결을 POST /api/fills로 보낸다")
     void sendsFill() {
         server.expect(requestTo("http://trade/api/fills"))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("""
-                        {"orderId": 1, "fillQuantity": 3, "fillPrice": 197.42}
+                        {"fillId": "fill-1", "orderId": 1, "fillQuantity": 3, "fillPrice": 197.42}
                         """))
                 .andRespond(withStatus(HttpStatus.NO_CONTENT));
 
-        client.sendFill(new FillNotification(1L, 3L, new BigDecimal("197.42")));
+        client.sendFill(new FillNotification("fill-1", 1L, 3L, new BigDecimal("197.42")));
 
         server.verify();
     }
@@ -51,7 +51,7 @@ class TradeServerClientTest {
         server.expect(requestTo("http://trade/api/fills"))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        assertThatCode(() -> client.sendFill(new FillNotification(1L, 3L, new BigDecimal("197.42"))))
+        assertThatCode(() -> client.sendFill(new FillNotification("fill-1", 1L, 3L, new BigDecimal("197.42"))))
                 .doesNotThrowAnyException();
 
         server.verify();
