@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +31,8 @@ public class OrderFillService {
         for(Long fillQuantity: fillQuantities) {
             delay += 500;
             BigDecimal fillPrice = fillPricePicker.pick(request.limitPrice());
-            scheduler.schedule(() -> tradeServerClient.sendFill(new FillNotification(request.orderId(), fillQuantity, fillPrice)),
+            String fillId = String.valueOf(UUID.randomUUID());
+            scheduler.schedule(() -> tradeServerClient.sendFill(new FillNotification(fillId, request.orderId(), fillQuantity, fillPrice)),
                     delay, TimeUnit.MILLISECONDS);
         }
     }
