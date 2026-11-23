@@ -22,11 +22,11 @@ public class TradeServerClient {
                     .body(notification)
                     .retrieve()
                     .toBodilessEntity();
-            log.info("fill sent orderId={} quantity={} price={}",
-                    notification.orderId(), notification.fillQuantity(), notification.fillPrice());
+            log.info("체결 통보 전송 fillId={} orderId={} quantity={} price={}",
+                    notification.fillId(), notification.orderId(), notification.fillQuantity(), notification.fillPrice());
         } catch (RestClientException e) {
-            log.error("fill send failed orderId={} quantity={} price={}",
-                    notification.orderId(), notification.fillQuantity(), notification.fillPrice(), e);
+            log.error("체결 통보 전송 실패 fillId={} orderId={} quantity={} price={}",
+                    notification.fillId(), notification.orderId(), notification.fillQuantity(), notification.fillPrice(), e);
         }
     }
 }
