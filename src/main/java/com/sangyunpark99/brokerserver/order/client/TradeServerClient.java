@@ -33,4 +33,18 @@ public class TradeServerClient {
             return false;
         }
     }
+
+    public boolean isHealthy() {
+        try {
+            tradeServerRestClient.get()
+                    .uri("/actuator/health")
+                    .retrieve()
+                    .toBodilessEntity();
+
+            return true;
+        } catch (RestClientException e) {
+            log.warn("거래 서버 헬스 체크 실패: {}", e.getMessage());
+            return false;
+        }
+    }
 }
