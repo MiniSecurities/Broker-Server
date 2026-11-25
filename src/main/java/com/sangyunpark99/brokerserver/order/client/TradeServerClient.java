@@ -14,7 +14,7 @@ public class TradeServerClient {
 
     private final RestClient tradeServerRestClient;
 
-    public void sendFill(FillNotification notification) {
+    public boolean sendFill(FillNotification notification) {
         try {
             tradeServerRestClient.post()
                     .uri("/api/fills")
@@ -24,9 +24,13 @@ public class TradeServerClient {
                     .toBodilessEntity();
             log.info("체결 통보 전송 fillId={} orderId={} quantity={} price={}",
                     notification.fillId(), notification.orderId(), notification.fillQuantity(), notification.fillPrice());
+
+            return true;
         } catch (RestClientException e) {
             log.error("체결 통보 전송 실패 fillId={} orderId={} quantity={} price={}",
                     notification.fillId(), notification.orderId(), notification.fillQuantity(), notification.fillPrice(), e);
+
+            return false;
         }
     }
 }
