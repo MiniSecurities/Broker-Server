@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,7 +23,9 @@ class FillSenderTest {
     private final FillSender fillSender = new FillSender(tradeServerClient, fillRepository);
 
     private static Fill fill() {
-        return new Fill("fill-1", 7L, 3, new BigDecimal("99699"));
+        Fill fill = new Fill("fill-1", 7L, 3, new BigDecimal("99699"), LocalDateTime.now());
+        fill.markFilled();
+        return fill;
     }
 
     @Test
