@@ -40,9 +40,9 @@ class FillRetrySchedulerTest {
     @DisplayName("거래 서버가 살아 있으면 3초 넘게 PENDING인 체결을 하나씩 다시 보낸다")
     void resendsOldPendingFills() {
         when(tradeServerClient.isHealthy()).thenReturn(true);
-        Fill first = new Fill("fill-1", 7L, 3, new BigDecimal("99699"));
-        Fill second = new Fill("fill-2", 7L, 7, new BigDecimal("99500"));
-        when(fillRepository.findTop100ByStatusAndCreatedAtBeforeOrderByIdAsc(eq(FillStatus.PENDING), any()))
+        Fill first = new Fill("fill-1", 7L, 3, new BigDecimal("99699"), LocalDateTime.now());
+        Fill second = new Fill("fill-2", 7L, 7, new BigDecimal("99500"), LocalDateTime.now());
+        when(fillRepository.findTop100ByStatusAndFillAtBeforeOrderByIdAsc(eq(FillStatus.PENDING), any()))
                 .thenReturn(List.of(first, second));
 
         LocalDateTime before = LocalDateTime.now();
@@ -50,7 +50,7 @@ class FillRetrySchedulerTest {
         LocalDateTime after = LocalDateTime.now();
 
         ArgumentCaptor<LocalDateTime> cutoff = ArgumentCaptor.forClass(LocalDateTime.class);
-        verify(fillRepository).findTop100ByStatusAndCreatedAtBeforeOrderByIdAsc(eq(FillStatus.PENDING), cutoff.capture());
+        verify(fillRepository).findTop100ByStatusAndFillAtBeforeOrderByIdAsc(eq(FillStatus.PENDING), cutoff.capture());
         assertThat(cutoff.getValue()).isBetween(before.minusSeconds(3), after.minusSeconds(3));
         verify(fillSender).send(first);
         verify(fillSender).send(second);
@@ -60,7 +60,7 @@ class FillRetrySchedulerTest {
     @DisplayName("다시 보낼 체결이 없으면 아무것도 보내지 않는다")
     void doesNothingWithoutPendingFills() {
         when(tradeServerClient.isHealthy()).thenReturn(true);
-        when(fillRepository.findTop100ByStatusAndCreatedAtBeforeOrderByIdAsc(eq(FillStatus.PENDING), any()))
+        when(fillRepository.findTop100ByStatusAndFillAtBeforeOrderByIdAsc(eq(FillStatus.PENDING), any()))
                 .thenReturn(List.of());
 
         scheduler.retry();
