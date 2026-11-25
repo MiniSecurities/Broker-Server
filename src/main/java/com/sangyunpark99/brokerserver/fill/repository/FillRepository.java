@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface FillRepository extends JpaRepository<Fill, Long> {
 
-    List<Fill> findTop100ByStatusAndCreatedAtBeforeOrderByIdAsc(FillStatus status, LocalDateTime createdAt);
+    List<Fill> findTop100ByStatusAndFillAtBeforeOrderByIdAsc(FillStatus status, LocalDateTime fillAt);
 
+    List<Fill> findTop100ByStatusAndFillAtLessThanEqualOrderByIdAsc(FillStatus status, LocalDateTime now);
 }

@@ -12,7 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class SchedulerConfig {
 
     @Bean(destroyMethod = "shutdown")
-    public ScheduledExecutorService fillScheduler() {
+    public ScheduledExecutorService schedulerExecutor() {
         return Executors.newScheduledThreadPool(4);
     }
 }

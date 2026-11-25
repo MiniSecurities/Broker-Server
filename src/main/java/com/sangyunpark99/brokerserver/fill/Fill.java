@@ -34,18 +34,28 @@ public class Fill {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    public Fill(String fillId,  Long orderId, long quantity, BigDecimal price) {
+    @Column(nullable = false)
+    private LocalDateTime fillAt;
+
+    public Fill(String fillId,  Long orderId, long quantity, BigDecimal price, LocalDateTime fillAt) {
         this.fillId = fillId;
         this.quantity = quantity;
         this.price = price;
-        this.status = FillStatus.PENDING;
+        this.status = FillStatus.SCHEDULED;
         this.orderId = orderId;
         this.createdAt = LocalDateTime.now();
+        this.fillAt = fillAt;
     }
 
     public void markSent() {
         if(status == FillStatus.PENDING) {
             this.status = FillStatus.SENT;
+        }
+    }
+
+    public void markFilled() {
+        if(status == FillStatus.SCHEDULED) {
+            this.status = FillStatus.PENDING;
         }
     }
 }
