@@ -70,4 +70,27 @@ class TradeServerClientTest {
 
         server.verify();
     }
+
+    @Test
+    @DisplayName("헬스 체크가 200이면 true")
+    void healthy() {
+        server.expect(requestTo("http://trade/actuator/health"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess());
+
+        assertThat(client.isHealthy()).isTrue();
+
+        server.verify();
+    }
+
+    @Test
+    @DisplayName("헬스 체크가 503(DOWN)이면 예외 없이 false")
+    void unhealthy() {
+        server.expect(requestTo("http://trade/actuator/health"))
+                .andRespond(withStatus(HttpStatus.SERVICE_UNAVAILABLE));
+
+        assertThat(client.isHealthy()).isFalse();
+
+        server.verify();
+    }
 }
