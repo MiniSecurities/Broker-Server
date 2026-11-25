@@ -4,6 +4,14 @@ server:
 spring:
   application:
     name: broker-server
+  datasource:
+    url: jdbc:mysql://localhost:3308/broker?serverTimezone=Asia/Seoul
+    username: root
+    password: root
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
 
 trade-server:
   base-url: http://localhost:8080
