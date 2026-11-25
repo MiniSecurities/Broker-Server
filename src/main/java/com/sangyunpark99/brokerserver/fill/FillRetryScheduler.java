@@ -24,7 +24,7 @@ public class FillRetryScheduler {
 
         if(!tradeServerClient.isHealthy()) return;
 
-        List<Fill> fills = fillRepository.findTop100ByStatusAndCreatedAtBeforeOrderByIdAsc(FillStatus.PENDING, LocalDateTime.now().minusSeconds(3));
+        List<Fill> fills = fillRepository.findTop100ByStatusAndFillAtBeforeOrderByIdAsc(FillStatus.PENDING, LocalDateTime.now().minusSeconds(3));
 
         for(Fill fill: fills) {
             fillSender.send(fill);
